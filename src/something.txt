@@ -1,0 +1,2 @@
+dot -Tpng input.dot -o output.png
+No path exists from 'it' to 'data'.
