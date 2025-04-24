@@ -107,10 +107,52 @@ public class Main {
         validateGraphExists();
         System.out.print("请输入起点单词：");
         String source = scanner.nextLine().trim().toLowerCase();
+
+        // 检查起点是否存在
+        if (!graph.existsNode(source)) {
+            System.out.println("错误：起点单词 '" + source + "' 不在图中");
+            return;
+        }
+
         System.out.print("请输入终点单词（留空显示所有路径）：");
         String target = scanner.nextLine().trim().toLowerCase();
-        graph.printShortestPaths(source, target.isEmpty() ? null : target);
+        if (target.isEmpty()) {
+            // 显示所有路径的逻辑
+            Map<String, List<List<String>>> allPaths = graph.getAllShortestPaths(source);
+            if (allPaths.isEmpty()) {
+                System.out.println("没有找到任何可达路径");
+                return;
+            }
+            System.out.println("\n从 " + source + " 出发的所有最短路径：");
+            allPaths.forEach((node, paths) -> {
+                System.out.println("\n到达 " + node + " 的路径"); // 假设添加了权重计算方法
+                paths.forEach(path -> {
+                    Collections.reverse(path); // 路径是反向存储的需要反转
+                    System.out.println(String.join(" -> ", path));
+                });
+            });
+        } else {
+            // 检查终点是否存在
+            if (!graph.existsNode(target)) {
+                System.out.println("错误：终点单词 '" + target + "' 不在图中");
+                return;
+            }
+
+            // 显示单目标路径
+            List<List<String>> paths = graph.getShortestPaths(source, target);
+            if (paths.isEmpty()) {
+                System.out.println("没有从 " + source + " 到 " + target + " 的路径");
+                return;
+            }
+            System.out.println("\n从 " + source + " 到 " + target + " 的最短路径");
+            paths.forEach(path -> {
+                Collections.reverse(path); // 路径是反向存储的需要反转
+                System.out.println(String.join(" -> ", path));
+            });
+        }
     }
+
+
     //计算pagerank
     private static void computePageRank() {
         validateGraphExists();
