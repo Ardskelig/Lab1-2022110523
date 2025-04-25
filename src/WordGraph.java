@@ -142,28 +142,22 @@ public class WordGraph {
         }
 
         Map<String, Object> shortestPaths = computeShortestPaths(start);
-        if (shortestPaths == null) {
-            return new ArrayList<>();
-        }
+        if (shortestPaths == null) return new ArrayList<>();
 
         Map<String, Integer> distances = (Map<String, Integer>) shortestPaths.get("distances");
         Map<String, List<String>> predecessors = (Map<String, List<String>>) shortestPaths.get("predecessors");
 
         if (end != null) {
-            int distance = distances.get(end);
-            if (distance == Integer.MAX_VALUE) {
-                return new ArrayList<>();
-            }
+            if (distances.get(end) == Integer.MAX_VALUE) return new ArrayList<>();
             List<List<String>> paths = new ArrayList<>();
-            List<String> path = new ArrayList<>();
-            path.add(end);
-            backtrack(end, start, predecessors, path, paths);
+            backtrack(end, start, predecessors, new ArrayList<>(Arrays.asList(end)), paths);
             return paths;
-        } else {
-            return new ArrayList<>();
         }
+        return new ArrayList<>();
     }
 
+
+    //附加，输入一个节点，获取其到其他所有节点的最短路径
     public Map<String, List<List<String>>> getAllShortestPaths(String start) {
         if (!adjacencyList.containsKey(start)) {
             return new HashMap<>();
@@ -238,8 +232,11 @@ public class WordGraph {
         return result;
     }
 
-    private void backtrack(String current, String start, Map<String, List<String>> predecessors, List<String> path, List<List<String>> result) {
+    private void backtrack(String current, String start,
+                           Map<String, List<String>> predecessors,
+                           List<String> path, List<List<String>> result) {
         if (current.equals(start)) {
+            // 关键修改：复制并反转路径
             List<String> reversedPath = new ArrayList<>(path);
             Collections.reverse(reversedPath);
             result.add(reversedPath);
@@ -252,6 +249,7 @@ public class WordGraph {
             path.remove(path.size() - 1);
         }
     }
+
 
     private static class NodeDistance {
         private final String node;
@@ -405,8 +403,8 @@ public class WordGraph {
 
         // 初始化参数
         final double DAMPING =d;
-        final int MAX_ITERATIONS = 100;
-        final double EPSILON = 1e-8;
+        final int MAX_ITERATIONS = 1000;
+        final double EPSILON = 1e-9;
         int nodeCount = nodes.size();
 
         // 初始化PageRank值

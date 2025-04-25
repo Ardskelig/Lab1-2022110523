@@ -146,7 +146,7 @@ public class Main {
             }
             System.out.println("\n从 " + source + " 到 " + target + " 的最短路径");
             paths.forEach(path -> {
-                Collections.reverse(path); // 路径是反向存储的需要反转
+//                Collections.reverse(path); // 已经在方法里处理过反转，无需再次处理
                 System.out.println(String.join(" -> ", path));
             });
         }
