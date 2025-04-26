@@ -403,8 +403,8 @@ public class WordGraph {
 
         // 初始化参数
         final double DAMPING =d;
-        final int MAX_ITERATIONS = 1000;
-        final double EPSILON = 1e-9;
+        final int MAX_ITERATIONS = 100;
+        final double EPSILON = 1e-8;
         int nodeCount = nodes.size();
 
         // 初始化PageRank值
