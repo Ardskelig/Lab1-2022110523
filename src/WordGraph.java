@@ -12,16 +12,6 @@ public class WordGraph {
     public WordGraph() {
         adjacencyList = new HashMap<>();
     }
-    //建立有向树
-//    public void buildGraph(List<String> words) {
-//        for (int i = 0; i < words.size() - 1; i++) {
-//            String source = words.get(i);
-//            String target = words.get(i + 1);
-//            adjacencyList.putIfAbsent(source, new HashMap<>());
-//            Map<String, Integer> edges = adjacencyList.get(source);
-//            edges.put(target, edges.getOrDefault(target, 0) + 1);
-//        }
-//    }
 
     public void buildGraph(List<String> words) {
         // 确保所有单词都作为节点存在
@@ -76,6 +66,16 @@ public class WordGraph {
     }
     //查询桥接词
     public String queryBridgeWords(String word1, String word2) {
+        if (word1 == null)
+        {
+            return "No word1 in the graph!";
+        }
+        else if(word2==null)
+        {
+            return "No word2 in the graph!";
+        }
+        word1=word1.toLowerCase();
+        word2=word2.toLowerCase();
         //word1 or word2 不存在
         if (!adjacencyList.containsKey(word1) || !adjacencyList.containsKey(word2)) {
             return "No " + (adjacencyList.containsKey(word1) ? "word2" :
@@ -105,6 +105,7 @@ public class WordGraph {
     }
     //获取所有的桥接词，用于添加桥接词的随机选择
     public List<String> getBridgeWords(String word1, String word2) {
+
         List<String> bridgeWords = new ArrayList<>();
         if (!adjacencyList.containsKey(word1)) return bridgeWords;
 
