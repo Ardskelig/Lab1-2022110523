@@ -5,7 +5,7 @@ import java.nio.file.*;
 public class Main {
     private static WordGraph graph;
     private static TextProcessor processor = new TextProcessor();
-    private static Scanner scanner = new Scanner(System.in);
+    private static Scanner scanner = new Scanner(System.in, "UTF-8");
 
     public static void main(String[] args) {
         showMainMenu();
@@ -64,7 +64,28 @@ public class Main {
     private static void buildGraphFromFile() throws IOException {
         System.out.print("请输入文本文件路径：");
         String path = scanner.nextLine().trim();
-        String content = Files.readString(Paths.get(path));
+        Set<String> allowedFilenames = Set.of("Easy Test.txt", "Cursed Be The Treasure.txt", "output.txt");
+        if (!allowedFilenames.contains(path)) {
+            throw new IllegalArgumentException("File not allowed");
+        }
+        Path baseDir = Paths.get(System.getProperty("user.dir")).normalize();
+        // 构造目标路径
+        Path resolvedPath = baseDir.resolve(path).normalize();
+        // 防止路径穿越攻击（比如 ../../xxx）
+        if (!resolvedPath.startsWith(baseDir)) {
+            throw new IllegalArgumentException("Path is outside of the current directory.");
+        }
+
+        String content = null;
+        try {
+            content = Files.readString(resolvedPath);
+            System.out.println("文件内容：\n" + content);
+        } catch (IOException e) {
+            System.err.println("读取文件失败: " + e.getMessage());
+        }
+//        String content = Files.readString(Paths.get(path));
+        System.out.println("Base Directory: " + baseDir.toString());
+        System.out.println("Resolved Path: " + resolvedPath.toString());
         List<String> words = processor.processText(content);
         graph = new WordGraph();
         graph.buildGraph(words);
