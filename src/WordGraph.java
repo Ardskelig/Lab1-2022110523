@@ -338,7 +338,50 @@ public class WordGraph {
     }
 
     //随机游走算法
+//    public void randomWalkToFile(String filename) throws IOException {
+//        if (adjacencyList.isEmpty()) {
+//            throw new IllegalStateException("Graph is empty");
+//        }
+//        List<String> nodes = new ArrayList<>(adjacencyList.keySet());
+//        String current = nodes.get(new Random().nextInt(nodes.size()));
+//        List<String> pathNodes = new ArrayList<>(Collections.singletonList(current));
+//        Set<String> visitedEdges = new HashSet<>();
+//        startStopMonitor();
+//        try {
+//            while (true) {
+//                Map<String, Integer> edges = adjacencyList.get(current);
+//                if (edges == null || edges.isEmpty()) break;
+//
+//                String next = selectNextNodeWithoutWeights(edges);
+//                String edgeKey = current + "->" + next;
+//
+//                if (visitedEdges.contains(edgeKey)) {
+//                    pathNodes.add(next);
+//                    break;
+//                }
+//                visitedEdges.add(edgeKey);
+//                pathNodes.add(next);
+//                current = next;
+//
+//                if (stopRequested) break;
+//            }
+//        } finally {
+//            stopRequested = true;
+//        }
+//        writePathToFile(filename, pathNodes);
+//    }
+//    //根据权重挑选节点
+
+
+    // 随机游走算法
     public void randomWalkToFile(String filename) throws IOException {
+        randomWalkToFile(filename, null);
+    }
+
+    /**
+     * 测试专用方法：允许注入 visitedEdges 初始值
+     */
+    void randomWalkToFile(String filename, Set<String> initialVisitedEdges) throws IOException {
         if (adjacencyList.isEmpty()) {
             throw new IllegalStateException("Graph is empty");
         }
@@ -346,7 +389,7 @@ public class WordGraph {
         List<String> nodes = new ArrayList<>(adjacencyList.keySet());
         String current = nodes.get(new Random().nextInt(nodes.size()));
         List<String> pathNodes = new ArrayList<>(Collections.singletonList(current));
-        Set<String> visitedEdges = new HashSet<>();
+        Set<String> visitedEdges = (initialVisitedEdges != null) ? new HashSet<>(initialVisitedEdges) : new HashSet<>();
 
         startStopMonitor();
 
@@ -375,7 +418,12 @@ public class WordGraph {
 
         writePathToFile(filename, pathNodes);
     }
-    //根据权重挑选节点
+
+    // 其他方法（selectNextNodeWithoutWeights、startStopMonitor、writePathToFile）保持不变...
+    // }
+
+
+
     private String selectNextNodeWithWeights(Map<String, Integer> edges) {
         List<String> nodes = new ArrayList<>();
         List<Integer> weights = new ArrayList<>();
